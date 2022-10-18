@@ -39,18 +39,70 @@ namespace NQueen
         {
             foreach (var x in QueenPositions)
             {
-                if (col == x.Key.Item2)
+                if (row == x.Key.Item1)
                 {
                     return false;
                 }
-                if (Math.Abs(x.Key.Item1) == Math.Abs(x.Key.Item2 - col))
+                if (Math.Abs(x.Key.Item1 - row) == Math.Abs(x.Key.Item2 - col))
                 {
                     return false;
                 }
             }
             return true;
         }
+        private bool Backtrack(int col)
+        {
+            for (int i = 0; i < BoardSize; ++i)
+            {
+                if (col == QueenCol)
+                    ++col;
+                if (col >= BoardSize)
+                    return true;
+                if(IsValid(i, col))
+                {
+                    //Add the valid placement
+                    QueenPositions.Add(Tuple.Create(i, col), 1);
+                    if (Backtrack(col + 1))
+                        return true;
+                    //If the next placement is invalid, backtrack to previous column
+                    QueenPositions.Remove(Tuple.Create(i, col));
+                }
+            }
+            return false;
 
+        }
+        //Call this function to solve the problem
+        public void SolveProblem()
+        {
+            if (!Backtrack(0))
+            {
+                Console.WriteLine("Solution does not exist");
+                return;
+            }
+            //Build a board and show it
+            BuildBoard();
+            ShowBoard();
+        }
+        //Create a board with queens
+        private void BuildBoard()
+        {
+            foreach(var AllQueens in QueenPositions)
+            {
+                QueenBoard[AllQueens.Key.Item1, AllQueens.Key.Item2] = AllQueens.Value;
+            }
+        }
+        //Print the board
+        private void ShowBoard()
+        {
+            for(int i = 0; i< BoardSize; ++i)
+            {
+                for (int j = 0; j< BoardSize; ++j)
+                {
+                    Console.Write("{0} ", QueenBoard[i, j]);
+                }
+                Console.Write('\n');
+            }
+        }
         //Position of all the queens
         private Dictionary<Tuple<int, int>, int> QueenPositions = null!;
         //Board information
@@ -67,6 +119,7 @@ namespace NQueen
         {
             var FileName = args[0];
             NQueen prog = new NQueen(FileName);
+            prog.SolveProblem();
         }
     }
 }
