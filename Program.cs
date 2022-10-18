@@ -34,6 +34,23 @@ namespace NQueen
             }
         }
 
+        //Check if a placement is valid by checking the rows and the diagonals
+        private bool IsValid(int row, int col)
+        {
+            foreach (var x in QueenPositions)
+            {
+                if (col == x.Key.Item2)
+                {
+                    return false;
+                }
+                if (Math.Abs(x.Key.Item1) == Math.Abs(x.Key.Item2 - col))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         //Position of all the queens
         private Dictionary<Tuple<int, int>, int> QueenPositions = null!;
         //Board information
